@@ -1,0 +1,12 @@
+
+
+MYSQL_ADD_PLUGIN(udf_black udf_black.cc
+                 MODULE_ONLY TEST_ONLY MODULE_OUTPUT_NAME "udf_black")
+IF(NOT DISABLE_SHARED)
+  IF(WIN32)
+    SET_TARGET_PROPERTIES(udf_black
+      PROPERTIES LINK_FLAGS
+      "/DEF:${CMAKE_CURRENT_SOURCE_DIR}/udf_black.def")
+  ENDIF()
+ENDIF()
+

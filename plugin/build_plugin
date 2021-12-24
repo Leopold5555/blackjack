@@ -1,0 +1,29 @@
+ #/bin/bash
+
+MYSQL_VER="mysql-5.7.36"
+TARGZ_FILE="$MYSQL_VER"".tar.gz"
+
+if [ ! -f "$TARGZ_FILE" ]; then
+	wget "https://dev.mysql.com/get/Downloads/MySQL-5.7/""$TARGZ_FILE"
+fi
+
+tar -xf "$TARGZ_FILE"
+cat cmake.patch >> "$MYSQL_VER""/sql/CMakeLists.txt"
+cp udf_* "$MYSQL_VER""/sql/"
+
+cd "$MYSQL_VER"
+
+mkdir _BUILD_
+cd _BUILD_
+cmake ..
+
+cd sql
+make udf_black.o
+
+cd CMakeFiles/udf_black.dir/
+gcc -shared -o udf_black.so -lcurl udf_black.cc.o
+strip udf_black.so
+
+cp ./udf_black.so ../../../../..
+
+
